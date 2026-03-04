@@ -60,4 +60,4 @@ This project adheres to the [Code of Conduct](./.github/CODE_OF_CONDUCT.md). By 
 
 ## License
 
-This repository is licensed under [Apache License 2.0](LICENSE) © [YYYY] Volvo Car Corporation.
+This repository is licensed under [Mozilla Public License 2.0](LICENSE) © [YYYY] Volvo Car Corporation.
