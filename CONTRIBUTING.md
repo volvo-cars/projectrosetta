@@ -51,27 +51,37 @@ Contributors are expected to:
 - Ensure documentation remains accurate
 - Verify that proposed changes are review-ready
 
+## Pre-commit Hooks
+
+This repository provides a pre-commit configuration to run quality checks
+automatically on every commit.
+
+Install pre-commit and set up the hooks once:
+
+- `pip install pre-commit`
+- `pre-commit install`
+
+From that point, `ruff` and `markdownlint` will run automatically on every
+`git commit`. To run manually across all files:
+
+- `pre-commit run --all-files`
+
 ## Local Quality Checks
 
-Before opening a PR, run the same checks that are enforced in CI:
+The recommended way to run checks locally is via pre-commit:
+
+- `pre-commit run --all-files` — run all checks
+- `pre-commit run ruff --all-files` — Python lint only
+- `pre-commit run ruff-format --all-files` — Python format only
+- `pre-commit run markdownlint --all-files` — Markdown lint only
+
+These match exactly what CI enforces before merge.
+
+If you prefer to run tools directly without pre-commit:
 
 - `ruff format --check .`
 - `ruff check .`
-- `npx markdownlint-cli2 "**/*.md"`
-
-If needed, install the required tools locally:
-
-- `pip install ruff`
-
-For Markdown linting, `markdownlint-cli2` requires **Node.js 20+**.
-
-- Verify Node version: `node --version`
-- If your Node version is below 20, upgrade Node.js and rerun:
-  - `npx markdownlint-cli2 "**/*.md"`
-
-If you cannot upgrade Node.js locally yet, run the Python checks locally and rely on CI for Markdown linting.
-
-Running these checks before submitting a PR reduces review cycle time and helps keep contributions consistent with repository standards.
+- `npx markdownlint-cli2 "**/*.md"` (requires Node.js 20+)
 
 ## Questions
 
