@@ -6,7 +6,7 @@ Project Rosetta provides tooling and workflows to make scenario generation, reco
 
 ## The Problem
 
-In ADAS development, both simulation and test-track execution are critical for V&V, certification (EuroNCAP, DCAS, ALKS), and rating. However, proving that the same scenario behaves consistently across these two environments is challenging—especially when data comes from different formats, tools, and measurement systems.
+In ADAS development, both simulation and test-track execution are critical for V&V, certification, and rating. However, proving that the same scenario behaves consistently across these two environments is challenging—especially when data comes from different formats, tools, and measurement systems.
 
 Project Rosetta solves this by standardizing workflows around open formats and explicit correlation metrics.
 
