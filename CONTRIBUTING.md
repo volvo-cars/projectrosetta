@@ -58,30 +58,33 @@ automatically on every commit.
 
 Install pre-commit and set up the hooks once:
 
-- `pip install pre-commit`
-- `pre-commit install`
+- `poetry install --with dev`
+- `poetry run pre-commit install`
+
+Note: The `markdownlint` pre-commit hook uses `markdownlint-cli`, which requires
+Node.js on your machine (Node.js 12+ for the pinned hook version).
 
 From that point, `ruff` and `markdownlint` will run automatically on every
 `git commit`. To run manually across all files:
 
-- `pre-commit run --all-files`
+- `poetry run pre-commit run --all-files`
 
 ## Local Quality Checks
 
 The recommended way to run checks locally is via pre-commit:
 
-- `pre-commit run --all-files` — run all checks
-- `pre-commit run ruff --all-files` — Python lint only
-- `pre-commit run ruff-format --all-files` — Python format only
-- `pre-commit run markdownlint --all-files` — Markdown lint only
+- `poetry run pre-commit run --all-files` — run all checks
+- `poetry run pre-commit run ruff --all-files` — Python lint only
+- `poetry run pre-commit run ruff-format --all-files` — Python format only
+- `poetry run pre-commit run markdownlint --all-files` — Markdown lint only
 
 These match exactly what CI enforces before merge.
 
 If you prefer to run tools directly without pre-commit:
 
-- `ruff format --check .`
-- `ruff check .`
-- `npx markdownlint-cli2 "**/*.md"` (requires Node.js 20+)
+- `poetry run ruff format --check .`
+- `poetry run ruff check .`
+- `npx markdownlint-cli "**/*.md" --config .markdownlint.json` (requires Node.js 12+)
 
 ## Questions
 

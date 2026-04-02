@@ -1,6 +1,31 @@
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "project-rosetta"
+version = "0.1.0"
+description = "Project Rosetta repository tooling and quality checks"
+authors = ["Project Rosetta Contributors"]
+license = "MPL-2.0"
+readme = "README.md"
+packages = [{ include = "project_rosetta", from = "src", format = ["sdist", "wheel"] }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+numpy = "^2.2.0"
+scenariogeneration = "^0.16.4"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.2.0"
+ruff = "^0.11.2"
+
+[tool.poetry.scripts]
+rosetta-hello = "project_rosetta.cli.hello:main"
+
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py310"
 
 [tool.ruff.format]
 quote-style = "double"

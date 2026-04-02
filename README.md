@@ -54,6 +54,24 @@ Before opening a pull request, run local quality checks as described in the [Loc
 
 This ensures your contribution is aligned with repository linting and formatting standards before CI runs.
 
+## Development Setup
+
+Set up the repository with Poetry:
+
+- `poetry install --with dev`
+
+Run the example Poetry entry-point command:
+
+- `poetry run rosetta-hello`
+
+Install pre-commit hooks (one-time):
+
+- `poetry run pre-commit install`
+
+Run all checks locally:
+
+- `poetry run pre-commit run --all-files`
+
 ## Guiding Principles
 
 - **Open Standards First**: Prioritize ASAM OpenSCENARIO and OpenDRIVE interoperability
