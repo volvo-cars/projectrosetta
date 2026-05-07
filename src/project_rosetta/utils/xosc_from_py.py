@@ -21,6 +21,9 @@ def py2xosc(py_file: str | Path) -> list[Path]:
     Raises:
         ImportError: If the module cannot be loaded from the specified file.
 
+    Raises:
+        ImportError: If the module cannot be loaded from the specified file.
+
     """
     py_file = Path(py_file)
     module_name = py_file.stem  # ✅ important fix
