@@ -54,4 +54,4 @@ def run_csv2xyt(csv_file: str, output_dir: str, columns: list[str]) -> None:
 
     for id_val, data in split_data.items():
         file_path = output_path / f"id_{id_val}.xyt"
-        data.to_csv(file_path, index=False, header=False)
+        data.to_csv(file_path, index=False, header=False, sep=" ", decimal=",")
