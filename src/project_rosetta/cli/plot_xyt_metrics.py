@@ -46,16 +46,18 @@ def args(argv: list[str] | None = None) -> argparse.Namespace:
         Parsed CLI arguments.
 
     """
-    parser = argparse.ArgumentParser(
-        description="Plot motion metrics derived from an XYT file."
-    )
+    parser = argparse.ArgumentParser(description="Plot motion metrics derived from an XYT file.")
     parser.add_argument("xyt_path", type=xyt_path_arg, help="Path to the input .xyt file.")
     parser.add_argument(
         "--output",
         type=Path,
         help="Optional output image path. If omitted, the plot is shown interactively.",
     )
-    parser.add_argument("--max-speed", type=_positive_float, help="Optional robot speed limit [m/s].")
+    parser.add_argument(
+        "--max-speed",
+        type=_positive_float,
+        help="Optional robot speed limit [m/s].",
+    )
     parser.add_argument(
         "--max-longitudinal-acceleration",
         type=_positive_float,
@@ -190,8 +192,18 @@ def calculate_motion_metrics(xyt_data: pd.DataFrame) -> pd.DataFrame:
 
 
 def summarize_motion_metrics(metrics_data: pd.DataFrame) -> dict[str, float]:
-    """Return peak metrics useful for trajectory feasibility checks."""
-    finite_turn_radius = metrics_data.loc[np.isfinite(metrics_data["turn_radius_m"]), "turn_radius_m"]
+    """
+    Return peak metrics useful for trajectory feasibility checks.
+
+    Returns:
+        A mapping with the peak speed, acceleration, jerk, curvature, friction,
+        and minimum turn radius derived from the XYT data.
+
+    """
+    finite_turn_radius = metrics_data.loc[
+        np.isfinite(metrics_data["turn_radius_m"]),
+        "turn_radius_m",
+    ]
     return {
         "peak_speed_m_s": float(metrics_data["speed_m_s"].max()),
         "peak_longitudinal_acceleration_m_s2": float(
@@ -200,22 +212,30 @@ def summarize_motion_metrics(metrics_data: pd.DataFrame) -> dict[str, float]:
         "peak_lateral_acceleration_m_s2": float(
             metrics_data["lateral_acceleration_m_s2"].abs().max()
         ),
-        "peak_total_acceleration_m_s2": float(
-            metrics_data["acceleration_magnitude_m_s2"].max()
-        ),
+        "peak_total_acceleration_m_s2": float(metrics_data["acceleration_magnitude_m_s2"].max()),
         "peak_yaw_rate_rad_s": float(metrics_data["yaw_rate_rad_s"].abs().max()),
-        "peak_yaw_acceleration_rad_s2": float(
-            metrics_data["yaw_acceleration_rad_s2"].abs().max()
-        ),
+        "peak_yaw_acceleration_rad_s2": float(metrics_data["yaw_acceleration_rad_s2"].abs().max()),
         "peak_jerk_m_s3": float(metrics_data["jerk_m_s3"].abs().max()),
         "max_curvature_rad_m": float(metrics_data["curvature_rad_m"].abs().max()),
-        "min_turn_radius_m": float(finite_turn_radius.min()) if not finite_turn_radius.empty else float("inf"),
+        "min_turn_radius_m": (
+            float(finite_turn_radius.min()) if not finite_turn_radius.empty else float("inf")
+        ),
         "peak_required_friction_coeff": float(metrics_data["required_friction_coeff"].max()),
     }
 
 
-def evaluate_limits(metrics_summary: dict[str, float], parsed_args: argparse.Namespace) -> list[str]:
-    """Compare derived metrics against optional robot limits."""
+def evaluate_limits(
+    metrics_summary: dict[str, float],
+    parsed_args: argparse.Namespace,
+) -> list[str]:
+    """
+    Compare derived metrics against optional robot limits.
+
+    Returns:
+        A list of human-readable limit violations. The list is empty when all
+        configured limits are satisfied.
+
+    """
     limit_definitions = [
         ("max_speed", "peak_speed_m_s", "speed"),
         (
@@ -244,16 +264,16 @@ def evaluate_limits(metrics_summary: dict[str, float], parsed_args: argparse.Nam
             continue
         measured_value = metrics_summary[summary_key]
         if measured_value > limit:
-            violations.append(
-                f"{label} exceeds limit: {measured_value:.3f} > {limit:.3f}"
-            )
+            violations.append(f"{label} exceeds limit: {measured_value:.3f} > {limit:.3f}")
 
     if parsed_args.min_turn_radius is not None:
         min_turn_radius = metrics_summary["min_turn_radius_m"]
         if min_turn_radius < parsed_args.min_turn_radius:
             violations.append(
                 "turn radius exceeds limit: "
-                f"required {min_turn_radius:.3f} m < allowed minimum {parsed_args.min_turn_radius:.3f} m"
+                "required "
+                f"{min_turn_radius:.3f} m < allowed minimum "
+                f"{parsed_args.min_turn_radius:.3f} m"
             )
 
     return violations
@@ -271,10 +291,7 @@ def print_motion_summary(metrics_summary: dict[str, float], violations: list[str
         "  Peak lateral acceleration: "
         f"{metrics_summary['peak_lateral_acceleration_m_s2']:.3f} m/s^2"
     )
-    print(
-        "  Peak total acceleration: "
-        f"{metrics_summary['peak_total_acceleration_m_s2']:.3f} m/s^2"
-    )
+    print(f"  Peak total acceleration: {metrics_summary['peak_total_acceleration_m_s2']:.3f} m/s^2")
     print(f"  Peak yaw rate: {metrics_summary['peak_yaw_rate_rad_s']:.3f} rad/s")
     print(f"  Peak jerk: {metrics_summary['peak_jerk_m_s3']:.3f} m/s^3")
     print(f"  Minimum turn radius: {metrics_summary['min_turn_radius_m']:.3f} m")
@@ -391,10 +408,7 @@ def plot_motion_metrics(
         default_output_path = xyt_path.with_name(f"{xyt_path.stem}_motion_metrics.png")
         default_output_path.parent.mkdir(parents=True, exist_ok=True)
         figure.savefig(default_output_path, dpi=150)
-        print(
-            "No interactive Matplotlib backend detected; "
-            f"saved plot to {default_output_path}"
-        )
+        print(f"No interactive Matplotlib backend detected; saved plot to {default_output_path}")
         plt.close(figure)
         return
 

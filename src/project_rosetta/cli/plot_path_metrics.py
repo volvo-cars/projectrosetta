@@ -56,7 +56,11 @@ def args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         help="Optional output image path. If omitted, the plot is shown interactively.",
     )
-    parser.add_argument("--max-speed", type=_positive_float, help="Optional robot speed limit [m/s].")
+    parser.add_argument(
+        "--max-speed",
+        type=_positive_float,
+        help="Optional robot speed limit [m/s].",
+    )
     parser.add_argument(
         "--max-longitudinal-acceleration",
         type=_positive_float,

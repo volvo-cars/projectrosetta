@@ -78,7 +78,13 @@ class ScenarioRunner:
         # print(f"Scenario runner setup complete for: {self.scenario_path}")
 
     def run(self) -> None:
-        """Run the scenario through esmini, convert the output to CSV, and then to XYT format."""
+        """
+        Run the scenario through esmini, convert the output to CSV, and then to XYT format.
+
+        Raises:
+            RuntimeError: If esmini exits with a non-zero status code.
+
+        """
         # print(f"Running esmini with config: {self.esmini_run_config}")
         result = run_esmini(self.esmini_run_config, log_file=self.esmini_log_file)
         if result.returncode != 0:

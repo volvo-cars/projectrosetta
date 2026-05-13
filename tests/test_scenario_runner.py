@@ -1,6 +1,8 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from project_rosetta.utils.scenario_runner import ScenarioBatch, ScenarioRunner
 
 
@@ -51,7 +53,10 @@ def test_scenario_runner_run(
 
     runner.run()
 
-    mock_run_esmini.assert_called_once_with(runner.esmini_run_config, log_file=runner.esmini_log_file)
+    mock_run_esmini.assert_called_once_with(
+        runner.esmini_run_config,
+        log_file=runner.esmini_log_file,
+    )
 
     mock_run_dat2csv.assert_called_once_with(
         runner.dat_file,
@@ -83,13 +88,10 @@ def test_scenario_runner_run_raises_when_esmini_fails(
     runner.esmini_log_file = Path("/tmp/esmini.log")
     mock_run_esmini.return_value = MagicMock(returncode=3)
 
-    try:
+    with pytest.raises(RuntimeError, match="exit code 3") as exc_info:
         runner.run()
-    except RuntimeError as exc:
-        assert str(runner.esmini_log_file) in str(exc)
-        assert "exit code 3" in str(exc)
-    else:
-        raise AssertionError("Expected RuntimeError when esmini fails")
+
+    assert str(runner.esmini_log_file) in str(exc_info.value)
 
     mock_run_dat2csv.assert_not_called()
     mock_run_csv2xyt.assert_not_called()
