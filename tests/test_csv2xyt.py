@@ -58,5 +58,5 @@ def test_run_csv2xyt(tmp_path):
     assert file1.exists()
     assert file2.exists()
 
-    df1 = pd.read_csv(file1, header=None)
+    df1 = pd.read_csv(file1, header=None, sep=" ", decimal=",")
     assert df1.iloc[0].tolist() == [1, 10]

@@ -1,9 +1,12 @@
+import logging
 import shutil
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict
 
 from project_rosetta.utils.xosc_from_py import py2xosc
+
+logger = logging.getLogger(__name__)
 
 XOSC_DIR_NAME = "xosc"
 XODR_DIR_NAME = "xodr"
@@ -132,10 +135,10 @@ def get_xodr_file_path_from_xosc_file_path(xosc_file_path) -> Path | None:
         xosc_element_root = ET.parse(f)
     road_network_element = xosc_element_root.find("RoadNetwork")
     if road_network_element is None:
-        print(f"Element 'RoadNetwork' was not found in {xosc_file_path}")
+        logger.error(f"Element 'RoadNetwork' was not found in {xosc_file_path}")
         return None
     if len(road_network_element) == 0:
-        print(f"Element 'RoadNetwork' does not contain any logic file in {xosc_file_path}")
+        logger.error(f"Element 'RoadNetwork' does not contain any logic file in {xosc_file_path}")
         return None
     logic_file_element = road_network_element[0]
     return Path(logic_file_element.attrib["filepath"])
@@ -192,7 +195,7 @@ def get_catalog_locations_dict(xosc_file_path) -> Dict:
         xosc_element_root = ET.parse(f)
     catalog_locations_element = xosc_element_root.find("CatalogLocations")
     if catalog_locations_element is None:
-        print(f"Element 'CatalogLocations' was not found in {xosc_file_path}")
+        logger.error(f"Element 'CatalogLocations' was not found in {xosc_file_path}")
         return None
     catalog_locations_dict = {}
     for catalog_element in catalog_locations_element:
@@ -244,11 +247,11 @@ def adjust_catalogs(original_scenario_file_path, xosc_file_path, catalogs_path_d
                     src_sub_catalog_rel_py_scenario_dir_path,
                 ]
             )
-            print(
+            logger.error(
                 f"Could not resolve '{src_sub_catalog_rel_dir_path}'!\n"
                 + f"{not_exist_file_path_list_str} does NOT exist!"
             )
-            print("Faulty scenario file: %s", xosc_file_path)
+            logger.error("Faulty scenario file: %s", xosc_file_path)
             return None
 
         sub_catalog_dir_name = src_sub_catalog_dir_path.name

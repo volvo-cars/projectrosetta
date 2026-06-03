@@ -6,6 +6,9 @@ import stat
 import zipfile
 
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 ESMINI_RELEAVE_VERSION = "v3.0.1"
 
@@ -39,7 +42,7 @@ def ensure_executable(path):
     if not (st.st_mode & stat.S_IXUSR):
         # Add execute bit for user (and optionally group/others)
         os.chmod(path, st.st_mode | stat.S_IXUSR)
-        print(f"Made {path} executable")
+        logger.debug(f"Made {path} executable")
 
 
 def esmini_directory() -> None:
@@ -80,7 +83,7 @@ def unzip_esmini(zip_file: str, output_dir: str) -> None:
 
 def setup_esmini() -> None:
     """Set up esmini by fetching and extracting necessary files."""
-    print("Setting up esmini...")
+    logger.info("Setting up esmini...")
 
     esmini_directory()
 
@@ -90,9 +93,9 @@ def setup_esmini() -> None:
         [ESMINI_DEMO_URL, ESMINI_DEMO]
     ]
     for url, output in files_to_fetch:
-        print(f"Fetching {url}...")
+        logger.info(f"Fetching {url}...")
         fetch_esmini_zip(url, output)
-        print(f"Unzipping {output}...")
+        logger.info(f"Unzipping {output}...")
         unzip_esmini(output, OUTPUT_FOLDER)
 
     for binary in ["esmini", "dat2csv", "replayer"]:
@@ -107,10 +110,10 @@ def main() -> int:
         Exit status code.
 
     """
-    print("Hello from setup esmini")
+    logger.info("Hello from setup esmini")
 
     setup_esmini()
 
-    print("Setup of esmini complete")
+    logger.info("Setup of esmini complete")
 
     return 0
