@@ -52,11 +52,16 @@ def run_esmini(
             + ("\n" if result.stderr and not result.stderr.endswith("\n") else "")
         )
 
-    return CommandResult(
+    _return = CommandResult(
         returncode=result.returncode,
         stdout=result.stdout,
         stderr=result.stderr,
     )
+    if _return.returncode != 0:
+        raise RuntimeError(
+            f"esmini failed with exit code {_return.returncode}. See log: {log_file if log_file else 'N/A'}"
+        )
+    return _return
 
 
 def build_esmini_config(

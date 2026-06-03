@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from pathlib import Path
 
@@ -10,6 +11,8 @@ from project_rosetta.utils.scenario_files import (
     scenario_list_handler,
 )
 from project_rosetta.utils.utils import LOGS_DIR
+
+logger = logging.getLogger(__name__)
 
 
 class ScenarioBatch:
@@ -59,9 +62,9 @@ class ScenarioRunner:
         self.scenario_name = scenario_path.stem
         self.log_folder = self.scenario_path.parent.parent
 
-        # print(f"Initialized ScenarioRunner for: {self.scenario_path}")
-        # print(f"Scenario name: {self.scenario_name}")
-        # print(f"Log folder: {self.log_folder}")
+        logger.debug(f"Initialized ScenarioRunner for: {self.scenario_path}")
+        logger.debug(f"Scenario name: {self.scenario_name}")
+        logger.debug(f"Log folder: {self.log_folder}")
 
     def setup(self) -> None:
         """Set up the scenario runner by preparing necessary files."""
@@ -75,7 +78,7 @@ class ScenarioRunner:
         )
         self.esmini_run_config = copy_file_to_folder(self.esmini_run_config, self.log_folder)
 
-        # print(f"Scenario runner setup complete for: {self.scenario_path}")
+        logger.debug(f"Scenario runner setup complete for: {self.scenario_path}")
 
     def run(self) -> None:
         """
@@ -85,12 +88,16 @@ class ScenarioRunner:
             RuntimeError: If esmini exits with a non-zero status code.
 
         """
-        # print(f"Running esmini with config: {self.esmini_run_config}")
-        result = run_esmini(self.esmini_run_config, log_file=self.esmini_log_file)
-        if result.returncode != 0:
-            raise RuntimeError(
-                f"esmini failed with exit code {result.returncode}. See log: {self.esmini_log_file}"
-            )
+        logger.debug(f"Running esmini with config: {self.esmini_run_config}")
+        run_esmini(self.esmini_run_config, log_file=self.esmini_log_file)
+        logger.debug(f"esmini run completed successfully for: {self.scenario_path}")
+
         run_dat2csv(self.dat_file, self.csv_file)
+        logger.debug(f"dat2csv conversion completed successfully for: {self.dat_file}")
 
         run_csv2xyt(self.csv_file, self.xyt_dir, columns=["x", "y", "time"])
+        logger.debug(f"csv2xyt conversion completed successfully for: {self.csv_file}")
+
+        logger.debug(f"Scenario '{self.scenario_name}' processing complete.")
+
+        logger.info(f"Output xyt directory: {self.xyt_dir}")
