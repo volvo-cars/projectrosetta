@@ -32,3 +32,4 @@ __pyacache__/
 
 #env
 .env
+.venv*

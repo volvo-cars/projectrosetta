@@ -51,7 +51,6 @@ def run_esmini(
             + result.stderr
             + ("\n" if result.stderr and not result.stderr.endswith("\n") else "")
         )
-
     return CommandResult(
         returncode=result.returncode,
         stdout=result.stdout,

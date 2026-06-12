@@ -82,9 +82,9 @@ Start with getting esmini demo version
 
 - `poetry run esmini-setup`
 
-Alternatively, to use a local esmini installation, create a .env file in the project root (see .env.example) and run:
+Alternatively, to use a local esmini installation run:
 
-- `poetry run esmini-setup --local`
+- `poetry run esmini-setup --local <path-to-local-esmini>`
 
 Now you can generate .xyt files from .xosc with
 

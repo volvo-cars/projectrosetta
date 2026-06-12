@@ -7,15 +7,9 @@ import stat
 import zipfile
 
 import requests
-from dotenv import load_dotenv
 
-ESMINI_RELEAVE_VERSION = "v3.0.1"
+ESMINI_RELEAVE_VERSION = "v3.3.0"
 
-# Currently not used, only demo atm
-ESMINI_BIN_URL = f"https://github.com/esmini/esmini/releases/download/{ESMINI_RELEAVE_VERSION}/esmini-bin_Linux.zip"
-ESMINI_SRC_URL = f"https://github.com/esmini/esmini/archive/refs/tags/{ESMINI_RELEAVE_VERSION}.zip"
-ESMINI_BIN = "esmini_bin"
-ESMINI_SRC = "esmini_src"
 
 ESMINI_DEMO_URL = f"https://github.com/esmini/esmini/releases/download/{ESMINI_RELEAVE_VERSION}/esmini-demo_Linux.zip"
 ESMINI_DEMO = "esmini_demo"
@@ -75,13 +69,29 @@ def unzip_esmini(zip_file: str, output_dir: str) -> None:
     """
     Unzip the specified zip file into the given output directory.
 
+    Strips the top-level directory from the zip so contents are
+    extracted directly into output_dir.
+
     Args:
         zip_file: Path to the zip file (without .zip extension).
         output_dir: Directory to extract the contents to.
 
     """
     with zipfile.ZipFile(zip_file + ".zip", "r") as zip_ref:
-        zip_ref.extractall(output_dir)
+        # Determine the top-level directory in the zip
+        top_level = zip_ref.namelist()[0].split("/")[0]
+        for member in zip_ref.namelist():
+            # Strip the top-level directory prefix
+            rel_path = member[len(top_level) + 1 :]
+            if not rel_path:
+                continue
+            target_path = os.path.join(output_dir, rel_path)
+            if member.endswith("/"):
+                os.makedirs(target_path, exist_ok=True)
+            else:
+                os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                with zip_ref.open(member) as src, open(target_path, "wb") as dst:
+                    dst.write(src.read())
 
 
 def setup_esmini() -> None:
@@ -90,11 +100,7 @@ def setup_esmini() -> None:
 
     esmini_directory(mkdir=True)
 
-    files_to_fetch = [
-        # [ESMINI_BIN_URL, ESMINI_BIN],
-        # [ESMINI_SRC_URL, ESMINI_SRC],
-        [ESMINI_DEMO_URL, ESMINI_DEMO]
-    ]
+    files_to_fetch = [(ESMINI_DEMO_URL, ESMINI_DEMO)]
     for url, output in files_to_fetch:
         print(f"Fetching {url}...")
         fetch_esmini_zip(url, output)
@@ -103,7 +109,7 @@ def setup_esmini() -> None:
         os.remove(output + ".zip")
 
     for binary in ["esmini", "dat2csv", "replayer"]:
-        ensure_executable(os.path.join(OUTPUT_FOLDER, "esmini-demo", "bin", binary))
+        ensure_executable(os.path.join(OUTPUT_FOLDER, "bin", binary))
 
 
 def setup_esmini_local(esmini_path: str | None = None) -> None:
@@ -112,20 +118,16 @@ def setup_esmini_local(esmini_path: str | None = None) -> None:
 
     Args:
         esmini_path: Path to the local esmini directory containing bin/.
-                     Defaults to ESMINI_DIR environment variable.
+                     Defaults to None.
 
     Raises:
-        ValueError: If no local esmini path is provided or set in environment.
+        ValueError: If no local esmini path is provided.
         FileNotFoundError: If the local esmini path does not exist.
 
     """
-    load_dotenv()  # loads .env from current directory
-
-    esmini_path = os.getenv("ESMINI_DIR")
-    print(f"ESMINI_DIR from environment: {esmini_path}")
     if not esmini_path:
         raise ValueError(
-            "No local esmini path provided.Set ESMINI_DIR environment variable in .env file."
+            "No local esmini path provided. Please specify a path using the --local argument."
         )
 
     esmini_dir = os.path.abspath(esmini_path)
@@ -160,9 +162,10 @@ def args(argv: list[str] | None = None) -> argparse.Namespace:
 
     parser.add_argument(
         "--local",
-        default=False,
-        action="store_true",
-        help="Setup local esmini installation.",
+        type=str,
+        default=None,
+        metavar="PATH",
+        help="Setup local esmini installation from the given path.",
     )
     return parser.parse_args(argv)
 
@@ -178,9 +181,10 @@ def main(argv: list[str] | None = None) -> int:
 
     """
     parsed_args = args(argv)
-    if parsed_args.local:
+    if parsed_args.local is not None:
         print("Setting up local esmini installation")
-        setup_esmini_local()
+        setup_esmini_local(parsed_args.local or None)
+
     else:
         print("Setting up esmini from GitHub release")
         setup_esmini()
