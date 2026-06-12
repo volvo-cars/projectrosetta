@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from pathlib import Path
+import logging
 
 from project_rosetta.utils.csv2xyt import run_csv2xyt
 from project_rosetta.utils.run_dat2csv import run_dat2csv
@@ -13,6 +14,7 @@ from project_rosetta.utils.scenario_files import (
 from project_rosetta.utils.utils import LOGS_DIR
 
 logger = logging.getLogger(__name__)
+
 
 
 class ScenarioBatch:
@@ -101,3 +103,4 @@ class ScenarioRunner:
         logger.debug(f"Scenario '{self.scenario_name}' processing complete.")
 
         logger.info(f"Output xyt directory: {self.xyt_dir}")
+

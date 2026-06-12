@@ -8,3 +8,4 @@ LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(format=LOG_FORMAT, datefmt=LOG_DATE_FORMAT, level=log_level)
+
