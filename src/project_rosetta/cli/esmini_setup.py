@@ -7,7 +7,6 @@ import stat
 import zipfile
 
 import requests
-import logging
 
 logger = logging.getLogger(__name__)
 
