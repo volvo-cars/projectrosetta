@@ -1,0 +1,61 @@
+name: Package
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: python -m pip install --upgrade build pip twine
+
+      - name: Build distributions
+        run: python -m build
+
+      - name: Validate distribution metadata
+        run: python -m twine check dist/*
+
+      - name: Install wheel
+        run: |
+          python -m venv /tmp/project-rosetta-wheel
+          /tmp/project-rosetta-wheel/bin/python -m pip install dist/*.whl
+
+      - name: Smoke test installed package
+        run: |
+          /tmp/project-rosetta-wheel/bin/python - <<'PY'
+          from importlib.metadata import distribution
+
+          import project_rosetta
+
+          installed = distribution("project-rosetta")
+          assert installed.version
+          installed_scripts = {
+              entry.name
+              for entry in installed.entry_points
+              if entry.group == "console_scripts"
+          }
+          assert installed_scripts
+          PY
+          /tmp/project-rosetta-wheel/bin/rosetta-hello
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/

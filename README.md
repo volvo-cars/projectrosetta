@@ -72,6 +72,24 @@ Run all checks locally:
 
 - `poetry run pre-commit run --all-files`
 
+## Installation
+
+Install the latest published release from PyPI:
+
+- `python -m pip install projectrosetta`
+
+The distribution name is `project-rosetta` and the Python import name is
+`project_rosetta`. The install provides these commands:
+
+- `rosetta-hello`
+- `esmini-setup`
+- `run-scenario2xyt`
+- `plot-path-metrics`
+- `plot-xyt-metrics`
+
+Maintainers can find the PyPI publication procedure in
+[Releasing Project Rosetta](docs/releasing.md).
+
 ## Scenario to .xyt
 
 Start with getting esmini demo version
