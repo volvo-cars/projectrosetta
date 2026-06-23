@@ -102,6 +102,16 @@ Now you can generate .xyt files from .xosc with
 
 This will generate one .xyt file for each entity in the scenario. All relevant information will be stored in a logs folder.
 
+## ABD log to .xyt
+
+- `poetry run abd-log2xyt <path_to_abd_log_txt> <output_directory>`
+
+## .xyt to OpenSCENARIO
+
+- `poetry run xyt2xosc <path_to_xyt> [<path_to_xyt> ...] <output_xosc>`
+
+This writes a road-less trajectory replay with world-coordinate positions.
+
 ## Guiding Principles
 
 - **Open Standards First**: Prioritize ASAM OpenSCENARIO and OpenDRIVE interoperability
