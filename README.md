@@ -6,7 +6,7 @@ Project Rosetta provides tooling and workflows to make scenario generation, reco
 
 ## The Problem
 
-In ADAS development, both simulation and test-track execution are critical for V&V, certification, and rating. However, proving that the same scenario behaves consistently across these two environments is challenging—especially when data comes from different formats, tools, and measurement systems.
+In ADAS development, both simulation and test-track execution are critical for V&V, certification, and rating. However, proving that the same scenario behaves consistently across these two environments is challenging, especially when data comes from different formats, tools, and measurement systems.
 
 Project Rosetta solves this by standardizing workflows around open formats and explicit correlation metrics.
 
@@ -43,7 +43,7 @@ Project Rosetta solves this by standardizing workflows around open formats and e
 
 ## Quick Links
 
-- **[Documentation](docs/)** — Start here for guides, architecture, and references
+- **[Documentation](docs/)**  Start here for guides, architecture, and references
 - **[Getting Started](docs/getting-started/)** — Onboarding and setup
 - **[FAQ](docs/faq/faq.md)** — Common questions and clarifications
 - **[Contributing Guide](CONTRIBUTING.md)** — How to contribute (including CCB governance for `main`)
@@ -55,6 +55,10 @@ Before opening a pull request, run local quality checks as described in the [Loc
 This ensures your contribution is aligned with repository linting and formatting standards before CI runs.
 
 ## Development Setup
+
+Install Poetry>=1.2 (if not already installed):
+
+- `pip install poetry`
 
 Set up the repository with Poetry:
 
@@ -96,11 +100,21 @@ Start with getting esmini demo version
 
 - `poetry run esmini-setup`
 
+Alternatively, to use a local esmini installation run:
+
+- `poetry run esmini-setup --local <path-to-local-esmini>`
+
 Now you can generate .xyt files from .xosc with
 
-- `poetry run run-scenatio2xyt <path_to_scenario_xosc>`
+- `poetry run run-scenario2xyt <path_to_scenario_xosc>`
 
 This will generate one .xyt file for each entity in the scenario. All relevant information will be stored in a logs folder.
+
+You can also provide a Python scenario description (parsable by the ScenarioGeneration library) to handle multiple permutations
+
+- `poetry run run-scenatio2xyt <path_to_python_scenario>`
+
+This will generate `.xyt` files for all entities across all scenario variants.
 
 ## ABD log to .xyt
 

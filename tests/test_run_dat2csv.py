@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from project_rosetta.utils.run_dat2csv import run_dat2csv
 
 
@@ -20,7 +22,5 @@ def test_run_dat2csv_failure(mock_run):
     """Test that run_dat2csv correctly handles subprocess errors."""
     mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="error occurred")
 
-    result = run_dat2csv("input.dat", "output.csv", cwd=".")
-
-    assert result.returncode == 1
-    assert "error" in result.stderr
+    with pytest.raises(RuntimeError, match="dat2csv failed"):
+        run_dat2csv("input.dat", "output.csv", cwd=".")

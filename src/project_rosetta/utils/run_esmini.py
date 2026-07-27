@@ -1,12 +1,12 @@
 import subprocess
 from pathlib import Path
 
-from project_rosetta.utils.utils import ESMINI_DEMO_DIR, CommandResult
+from project_rosetta.utils.utils import ESMINI_DIR, CommandResult
 
 
 def run_esmini(
     config_file: Path | str,
-    cwd: Path | str = ESMINI_DEMO_DIR,
+    cwd: Path | str = ESMINI_DIR,
     log_file: Path | str | None = None,
 ) -> CommandResult:
     """
@@ -51,7 +51,6 @@ def run_esmini(
             + result.stderr
             + ("\n" if result.stderr and not result.stderr.endswith("\n") else "")
         )
-
     return CommandResult(
         returncode=result.returncode,
         stdout=result.stdout,

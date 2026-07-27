@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 LOGS_DIR = BASE_DIR / "logs"
 
-ESMINI_DEMO_DIR = BASE_DIR / "esmini" / "esmini-demo"
+ESMINI_DIR = BASE_DIR / "esmini"
 
 
 @dataclass
