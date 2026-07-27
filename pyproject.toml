@@ -53,6 +53,7 @@ plot-path-metrics = "project_rosetta.cli.plot_path_metrics:main"
 plot-xyt-metrics = "project_rosetta.cli.plot_xyt_metrics:main"
 abd-log2xyt = "project_rosetta.cli.abd_log2xyt:main"
 xyt2xosc = "project_rosetta.cli.xyt2xosc:main"
+abd-visualize = "project_rosetta.cli.abd_visualize:main"
 
 [tool.poetry]
 packages = [{ include = "project_rosetta", from = "src", format = ["sdist", "wheel"] }]
