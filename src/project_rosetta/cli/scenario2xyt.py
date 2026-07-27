@@ -1,7 +1,6 @@
 import argparse
 from pathlib import Path
 
-# from project_rosetta.utils.scenariorunner import ScenarioBatch
 from project_rosetta.utils.scenario_runner import ScenarioBatch
 
 ALLOWED_SCENARIO_SUFFIXES = {".py", ".xosc"}

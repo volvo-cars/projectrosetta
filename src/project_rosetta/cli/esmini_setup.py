@@ -1,6 +1,7 @@
 """esmini setup for project-rosetta."""
 
 import argparse
+import logging
 import os
 import shutil
 import stat
@@ -9,6 +10,8 @@ import zipfile
 import requests
 
 ESMINI_RELEAVE_VERSION = "v3.3.0"
+logger = logging.getLogger(__name__)
+
 
 
 ESMINI_DEMO_URL = f"https://github.com/esmini/esmini/releases/download/{ESMINI_RELEAVE_VERSION}/esmini-demo_Linux.zip"
@@ -36,7 +39,7 @@ def ensure_executable(path):
     if not (st.st_mode & stat.S_IXUSR):
         # Add execute bit for user (and optionally group/others)
         os.chmod(path, st.st_mode | stat.S_IXUSR)
-        print(f"Made {path} executable")
+        logger.debug(f"Made {path} executable")
 
 
 def esmini_directory(mkdir: bool) -> None:
@@ -96,15 +99,15 @@ def unzip_esmini(zip_file: str, output_dir: str) -> None:
 
 def setup_esmini() -> None:
     """Set up esmini by fetching and extracting necessary files."""
-    print("Setting up esmini...")
+    logger.info("Setting up esmini...")
 
     esmini_directory(mkdir=True)
 
     files_to_fetch = [(ESMINI_DEMO_URL, ESMINI_DEMO)]
     for url, output in files_to_fetch:
-        print(f"Fetching {url}...")
+        logger.info(f"Fetching {url}...")
         fetch_esmini_zip(url, output)
-        print(f"Unzipping {output}...")
+        logger.info(f"Unzipping {output}...")
         unzip_esmini(output, OUTPUT_FOLDER)
         os.remove(output + ".zip")
 
@@ -184,10 +187,10 @@ def main(argv: list[str] | None = None) -> int:
     if parsed_args.local is not None:
         print("Setting up local esmini installation")
         setup_esmini_local(parsed_args.local or None)
-
     else:
         print("Setting up esmini from GitHub release")
         setup_esmini()
 
-    print("Setup of esmini complete")
+    logger.info("Setup of esmini complete")
+
     return 0
