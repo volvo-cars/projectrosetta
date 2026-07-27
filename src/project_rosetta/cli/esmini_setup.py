@@ -13,8 +13,10 @@ ESMINI_RELEAVE_VERSION = "v3.3.0"
 logger = logging.getLogger(__name__)
 
 
-
-ESMINI_DEMO_URL = f"https://github.com/esmini/esmini/releases/download/{ESMINI_RELEAVE_VERSION}/esmini-demo_Linux.zip"
+ESMINI_DEMO_URL = (
+    f"https://github.com/esmini/esmini/releases/download/{ESMINI_RELEAVE_VERSION}/"
+    "esmini-demo_Linux.zip"
+)
 ESMINI_DEMO = "esmini_demo"
 
 
